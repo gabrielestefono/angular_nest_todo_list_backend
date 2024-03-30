@@ -40,7 +40,7 @@ export class TaskService {
 
 	update(id: number){
 		const task = this.tasks.find(task => task.id === id);
-		task.concluida = true;
+		task.concluida = !task.concluida;
 		return task;
 	}
 
