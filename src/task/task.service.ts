@@ -1,55 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Task } from './entity/task.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TaskService {
-	tasks = [
-		{
-			id: 1,
-			nome: "Task 01",
-			concluida: false,
-			deletedAt: null
-		},
-		{
-			id: 2,
-			nome: "Task 02",
-			concluida: false,
-			deletedAt: null
-		},
-		{
-			id: 3,
-			nome: "Task 03",
-			concluida: false,
-			deletedAt: null
-		},
-		{
-			id: 4,
-			nome: "Task 04",
-			concluida: false,
-			deletedAt: null
+	constructor(
+		@InjectRepository(Task)
+		private readonly taskRepository: Repository<Task>
+	){}
+
+	async findAll(){
+		return await this.taskRepository.find();
+	}
+
+	async create(task: any){
+		const newTask = this.taskRepository.create(task);
+		return await this.taskRepository.save(newTask);
+	}
+
+	async update(id: number){
+		const task = await this.taskRepository.findOne({
+			where: { id }
+		});
+		if(!task){
+			throw new NotFoundException('Tarefa não encontrada!');
 		}
-	]
-
-	findAll(){
-		return this.tasks;
-	}
-
-	create(task: any){
-		this.tasks.push(task);
-		return task;
-	}
-
-	update(id: number){
-		const task = this.tasks.find(task => task.id === id);
 		task.concluida = !task.concluida;
-		return task;
+		return await this.taskRepository.save(task);
 	}
 
-	delete(id: number){
-		const task = this.tasks.findIndex(task => task.id === id);
-		if(task >= 0){
-			this.tasks.splice(task, 1);
-			return;
+	async delete(id: number){
+		const task = await this.taskRepository.findOne({
+			where: { id }
+		});
+		if(!task){
+			throw new NotFoundException('Tarefa não encontrada!');
 		}
-		throw new NotFoundException('Tarefa não encontrada!');
+		return this.taskRepository.remove(task);
 	}
 }
