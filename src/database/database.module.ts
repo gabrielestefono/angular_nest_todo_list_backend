@@ -1,14 +1,24 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSourceOptions } from 'typeorm';
+
+export const dataSourceOptions: DataSourceOptions = {
+  type: 'sqlite',
+  database: 'dados',
+  entities: [],
+  synchronize: true,
+};
 
 @Module({
 	imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'dados.db',
-      entities: [],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => {
+        return {
+          ...dataSourceOptions
+        };
+      }
     })
-	]
+  ]
 })
+
 export class DatabaseModule {}
