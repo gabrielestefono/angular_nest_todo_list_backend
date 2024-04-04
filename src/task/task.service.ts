@@ -37,6 +37,6 @@ export class TaskService {
 		if(!task){
 			throw new NotFoundException('Tarefa não encontrada!');
 		}
-		return this.taskRepository.remove(task);
+		return await this.taskRepository.remove(task);
 	}
 }
