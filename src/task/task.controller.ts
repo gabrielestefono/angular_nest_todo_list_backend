@@ -17,11 +17,11 @@ export class TaskController {
 
 	@Patch(':id')
 	markAsConcluded(@Param('id') id: number){
-		return this.taskService.update(+id);
+		return this.taskService.update(id);
 	}
 
 	@Delete(':id')
 	remove(@Param('id') id: number){
-		return this.taskService.delete(+id);
+		return this.taskService.delete(id);
 	}
 }
