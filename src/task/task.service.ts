@@ -14,6 +14,16 @@ export class TaskService {
 		return await this.taskRepository.find();
 	}
 
+	async findOne(id: number){
+		const task = await this.taskRepository.findOne({
+			where: { id }
+		})
+		if(!task){
+			throw new NotFoundException('A tarefa não pôde ser encontrada');
+		}
+		return task;
+	}
+
 	async create(task: any){
 		const newTask = this.taskRepository.create(task);
 		return await this.taskRepository.save(newTask);
