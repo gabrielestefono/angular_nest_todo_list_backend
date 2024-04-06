@@ -2,13 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Task } from './entity/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Description } from './entity/description.entity';
+import { CreateTaskDTO } from './dto/create-task.dto';
 
 @Injectable()
 export class TaskService {
-	constructor(
-		@InjectRepository(Task)
-		private readonly taskRepository: Repository<Task>
-	){}
+	@InjectRepository(Task)
+	private readonly taskRepository: Repository<Task>
+	@InjectRepository(Description)
+	private readonly descriptionRepository: Repository<Description>
 
 	async findAll(){
 		return await this.taskRepository.find();
@@ -24,7 +26,7 @@ export class TaskService {
 		return task;
 	}
 
-	async create(task: any){
+	async create(task: CreateTaskDTO){
 		const newTask = this.taskRepository.create(task);
 		return await this.taskRepository.save(newTask);
 	}
@@ -37,6 +39,17 @@ export class TaskService {
 			throw new NotFoundException('Tarefa não encontrada!');
 		}
 		task.concluida = !task.concluida;
+		return await this.taskRepository.save(task);
+	}
+
+	async updateDescription(id: number, description: any){
+		const task = await this.taskRepository.findOne({
+			where: { id }
+		});
+		if(!task){
+			throw new NotFoundException('Tarefa não encontrada!');
+		}
+		task.description = description;
 		return await this.taskRepository.save(task);
 	}
 

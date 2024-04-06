@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Description } from 'src/task/entity/description.entity';
 import { Task } from 'src/task/entity/task.entity';
 import { DataSourceOptions } from 'typeorm';
 
@@ -10,8 +11,8 @@ export const dataBaseOptions: DataSourceOptions = {
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
-  entities: [Task],
-  synchronize: false,
+  entities: [Task, Description],
+  synchronize: true,
   ssl: true,
 }
 
@@ -19,7 +20,6 @@ export const dataBaseOptions: DataSourceOptions = {
  imports: [
    TypeOrmModule.forRootAsync({
     useFactory: ()=>{
-      console.log(dataBaseOptions)
       return {
         ...dataBaseOptions
       }
