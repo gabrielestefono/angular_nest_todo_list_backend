@@ -28,7 +28,7 @@ export class TaskController {
 
 	@Patch('description/:id')
 	createDescription(@Param('id') id: number, @Body() createDescriptionDTO: CreateDescriptionDTO){
-		return this.taskService.updateDescription(id, createDescriptionDTO.description)
+		return this.taskService.updateDescription(id, createDescriptionDTO)
 	}
 
 	@Delete(':id')

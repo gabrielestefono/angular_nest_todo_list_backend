@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Description } from './description.entity';
 
 @Entity('tasks')
 export class Task {
@@ -11,6 +12,7 @@ export class Task {
   @Column()
   concluida: boolean;
 
-  @Column({nullable: true})
-  description: string
+  @OneToOne(()=> Description, {nullable: true})
+  @JoinColumn()
+  description: Description;
 }

@@ -4,6 +4,7 @@ import { Task } from './entity/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Description } from './entity/description.entity';
 import { CreateTaskDTO } from './dto/create-task.dto';
+import { CreateDescriptionDTO } from './dto/create-description.dto';
 
 @Injectable()
 export class TaskService {
@@ -18,7 +19,8 @@ export class TaskService {
 
 	async findOne(id: number){
 		const task = await this.taskRepository.findOne({
-			where: { id }
+			where: { id },
+			relations: ['description']
 		})
 		if(!task){
 			throw new NotFoundException('A tarefa não pôde ser encontrada');
@@ -42,13 +44,14 @@ export class TaskService {
 		return await this.taskRepository.save(task);
 	}
 
-	async updateDescription(id: number, description: any){
+	async updateDescription(id: number, createDescriptionDTO: CreateDescriptionDTO){
 		const task = await this.taskRepository.findOne({
 			where: { id }
 		});
 		if(!task){
 			throw new NotFoundException('Tarefa não encontrada!');
 		}
+		const description = await this.descriptionRepository.save(createDescriptionDTO);
 		task.description = description;
 		return await this.taskRepository.save(task);
 	}

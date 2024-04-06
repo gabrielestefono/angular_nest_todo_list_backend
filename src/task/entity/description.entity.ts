@@ -6,5 +6,5 @@ export class Description {
   id: number;
 
   @Column()
-  descricao: string;
+  description: string;
 }
