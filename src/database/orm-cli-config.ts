@@ -3,6 +3,8 @@ dotenv.config();
 import { DataSource } from "typeorm";
 import { Task } from 'src/task/entity/task.entity';
 import { Description } from 'src/task/entity/description.entity';
+import { Taskstable1712404983358 } from './migrations/1712404983358-taskstable';
+import { Descriptionstable1712405461443 } from './migrations/1712405461443-descriptionstable';
 
 export const dataSource = new DataSource({
 	type: 'postgres',
@@ -14,5 +16,7 @@ export const dataSource = new DataSource({
   entities: [Task, Description],
   synchronize: false,
   ssl: true,
-	migrations: []
+	migrations: [Taskstable1712404983358,
+    Descriptionstable1712405461443
+  ]
 })

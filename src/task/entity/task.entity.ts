@@ -12,6 +12,12 @@ export class Task {
   @Column()
   concluida: boolean;
 
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
+
+  @Column({nullable: true})
+  updated_at: Date;
+
   @OneToOne(()=> Description, {nullable: true})
   @JoinColumn()
   description: Description;

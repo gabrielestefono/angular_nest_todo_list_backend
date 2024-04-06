@@ -12,7 +12,7 @@ export const dataBaseOptions: DataSourceOptions = {
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
   entities: [Task, Description],
-  synchronize: true,
+  synchronize: false,
   ssl: true,
 }
 

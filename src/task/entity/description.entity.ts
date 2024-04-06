@@ -7,4 +7,10 @@ export class Description {
 
   @Column()
   description: string;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
+
+  @Column({nullable: true})
+  updated_at: Date;
 }
