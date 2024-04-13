@@ -1,5 +1,6 @@
 import { CreateDescriptionDTO } from './dto/create-description.dto';
 import { CreateTaskDTO } from './dto/create-task.dto';
+import { EditarNomeDTO } from './dto/editar-nome.dto';
 import { TaskService } from './task.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
@@ -24,6 +25,11 @@ export class TaskController {
 	@Patch(':id')
 	markAsConcluded(@Param('id') id: number){
 		return this.taskService.update(id);
+	}
+
+	@Patch('nome/:id')
+	editName(@Param('id') id: number, @Body('nome') editarNomeDTO: EditarNomeDTO){
+		return this.taskService.updateName(id, editarNomeDTO)
 	}
 
 	@Patch('description/:id')
