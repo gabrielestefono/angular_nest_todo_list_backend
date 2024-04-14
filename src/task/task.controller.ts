@@ -28,7 +28,7 @@ export class TaskController {
 	}
 
 	@Patch('nome/:id')
-	editName(@Param('id') id: number, @Body('nome') editarNomeDTO: EditarNomeDTO){
+	editName(@Param('id') id: number, @Body() editarNomeDTO: EditarNomeDTO){
 		return this.taskService.updateName(id, editarNomeDTO)
 	}
 
