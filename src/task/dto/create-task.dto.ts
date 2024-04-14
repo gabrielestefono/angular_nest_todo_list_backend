@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from "class-validator"
+import { IsBoolean, IsNumber, IsString, Min } from "class-validator"
 
 export class CreateTaskDTO{
 	@IsString()
@@ -6,4 +6,8 @@ export class CreateTaskDTO{
 
 	@IsBoolean()
 	readonly concluida: boolean
+
+	@IsNumber()
+	@Min(0)
+	readonly elemento_pai: number
 }

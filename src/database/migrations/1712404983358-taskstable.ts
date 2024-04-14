@@ -22,6 +22,10 @@ export class Taskstable1712404983358 implements MigrationInterface {
                     type: "boolean",
                 },
                 {
+                    name: "elemento_pai",
+                    type: "int",
+                },
+                {
                     name: "descriptionId",
                     type: "int",
                     isNullable: true

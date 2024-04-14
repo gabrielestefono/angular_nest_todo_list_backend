@@ -15,7 +15,9 @@ export class TaskService {
 	private readonly descriptionRepository: Repository<Description>
 
 	async findAll(){
-		return await this.taskRepository.find();
+		return await this.taskRepository.find({
+			where: {elemento_pai: 0}
+		});
 	}
 
 	async findOne(id: number){
@@ -23,10 +25,13 @@ export class TaskService {
 			where: { id },
 			relations: ['description']
 		})
+		const tasksFilhas = await this.taskRepository.find({
+			where: { elemento_pai: id },
+		})
 		if(!task){
 			throw new NotFoundException('A tarefa não pôde ser encontrada');
 		}
-		return task;
+		return { ...task, filhos: tasksFilhas };
 	}
 
 	async create(task: CreateTaskDTO){

@@ -12,6 +12,9 @@ export class Task {
   @Column()
   concluida: boolean;
 
+  @Column()
+  elemento_pai: number;
+
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
