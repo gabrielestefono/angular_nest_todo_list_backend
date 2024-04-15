@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { Description } from './description.entity';
+import { User } from 'src/user/entity/user.entity';
 
 @Entity('tasks')
 export class Task {
@@ -24,4 +25,7 @@ export class Task {
   @OneToOne(()=> Description, {nullable: true})
   @JoinColumn()
   description: Description;
+
+  @ManyToOne(() => User, (user)=> user.tasks)
+  user: User
 }
