@@ -1,5 +1,6 @@
 import { Task } from "src/task/entity/task.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import * as bcrypt from 'bcrypt';
 
 @Entity('users')
 export class User {
@@ -23,4 +24,9 @@ export class User {
 
   @OneToMany(() => Task, (task)=> task.user)
 	tasks: Task[]
+
+  @BeforeInsert()
+  async hashPassword(){
+    this.senha = await bcrypt.hash(this.senha, 10);
+  }
 }
