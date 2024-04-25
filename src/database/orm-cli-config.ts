@@ -7,6 +7,7 @@ import { Taskstable1712404983358 } from './migrations/1712404983358-taskstable';
 import { Descriptionstable1712405461443 } from './migrations/1712405461443-descriptionstable';
 import { User } from 'src/user/entity/user.entity';
 import { Userstable1713146005294 } from './migrations/1713146005294-userstable';
+import { AddVerifiedAt1714050405411 } from './migrations/1714050405411-add_verified_at';
 
 export const dataSource = new DataSource({
 	type: 'postgres',
@@ -20,6 +21,7 @@ export const dataSource = new DataSource({
   ssl: true,
 	migrations: [Taskstable1712404983358,
     Descriptionstable1712405461443,
-    Userstable1713146005294
+    Userstable1713146005294,
+    AddVerifiedAt1714050405411
   ]
 })

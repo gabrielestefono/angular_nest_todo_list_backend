@@ -11,10 +11,11 @@ export class AuthService {
 	private readonly userRepository: Repository<User>;
 
 
-	public async criarTokenAcesso(idUsuario: number): Promise<string>
+	public async criarTokenAcesso(idUsuario: number, verified: boolean): Promise<string>
 	{
+		console.log(verified ? process.env.JWT_EXPIRATION : process.env.JWT_EXPIRATION_TMP);
 		return sign({ idUsuario }, process.env.JWT_SECRET, {
-			expiresIn: process.env.JWT_EXPIRATION
+			expiresIn: verified ? process.env.JWT_EXPIRATION : process.env.JWT_EXPIRATION_TMP
 		});
 	}
 

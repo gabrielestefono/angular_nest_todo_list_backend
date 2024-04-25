@@ -22,6 +22,9 @@ export class User {
   @Column({nullable: true})
   updated_at: Date;
 
+  @Column({nullable: true})
+  verified_at: Date;
+
   @OneToMany(() => Task, (task)=> task.user)
 	tasks: Task[]
 
