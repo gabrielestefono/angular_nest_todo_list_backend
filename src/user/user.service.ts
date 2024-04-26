@@ -1,6 +1,6 @@
 import { EmailService } from './../email/email.service';
 import { AuthService } from './../auth/auth.service';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
@@ -33,12 +33,12 @@ export class UserService {
 			throw new NotFoundException("O usuário não existe!");
 		}
 		const verifiedAt = user.verified_at;
-		const verified = verifiedAt !== null;
+		const needVerify = verifiedAt == null;
 		const match = await this.checkPassword(loginDto.senha, user);
 		if(!match){
 			throw new UnauthorizedException("Credenciais Inválidas!");
 		}
-		const jwtToken = await this.authservice.criarTokenAcesso(user.id, verified);
+		const jwtToken = await this.authservice.criarTokenAcesso(user.id, false, needVerify);
 		return {
 			nome: user.nome,
 			email: user.email,
@@ -62,12 +62,12 @@ export class UserService {
 	{
 		const match = await bcrypt.compare(senha, user.senha);
 		if(!match){
-			throw new NotFoundException("Senha não encontrada!");
+			throw new UnauthorizedException("Credenciais Inválidas!");
 		}
 		return match;
 	}
 
-	async enviarEmailConfirmacao(authToken: string): Promise<string>
+	async enviarEmailConfirmacao(authToken: string): Promise<boolean>
 	{
 		const [, token] = authToken.split(' ');
 		const decodedJwt: any = jwt.decode(token);
@@ -75,19 +75,23 @@ export class UserService {
 		if(!user){
 			throw new NotFoundException('O usuário não existe!')
 		}
-		this.emailService.confirmacao(user, token);
-		return "Email enviado com sucesso!";
+		this.emailService.confirmacao(user);
+		return true;
 	}
 
 	/**
 	 * Envio de email de confirmação de email's
 	 */
-	async confirmarEmail(token: string): Promise<boolean>
+	async confirmarEmail(authToken: string): Promise<boolean>
 	{
+		const [, token] = authToken.split(' ');
 		const decodedJwt: any = jwt.decode(token);
 		if (!jwt.verify(token, process.env.JWT_SECRET)) {
 			throw new UnauthorizedException('O token expirou!');
 		} else {
+			if(!decodedJwt.confirmation){
+				throw new BadRequestException('A conta não pede confirmação!')
+			}
 			const user = await this.authservice.validarUsuario(decodedJwt.idUsuario);
 			if(!user){
 				throw new NotFoundException('O usuário não existe!')
@@ -95,6 +99,19 @@ export class UserService {
 			user.verified_at = new Date(Date.now());
 			this.userRepository.save(user);
 		}
+		return true;
+	}
+
+	async recuperacaoSenha(email: string): Promise<boolean>
+	{
+		const user = await this.userRepository.findOne({
+			where: { email }
+		});
+		if(!user){
+			throw new NotFoundException("Usuário não existe");
+		}
+		const token = await this.authservice.criarTokenAcesso(user.id, true, false);
+		this.emailService.recuperacaoSenha(user, token);
 		return true;
 	}
 }
