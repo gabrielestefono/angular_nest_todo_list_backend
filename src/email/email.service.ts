@@ -10,11 +10,17 @@ export class EmailService {
 
 	async confirmacao(user: User): Promise<any>
 	{
-		await this.mailerService.sendMail({
-			to: user.email,
-			subject: "Confirme o seu e-mail!",
-			html: `<p>Olá, ${user.nome}, seja bem vindo à nossa To-Do List! Para confirmar o email, por favor, clique <a href="http://localhost:4200/confirmar">aqui</a></p>`,
-		})
+		try {
+			const result = await this.mailerService.sendMail({
+				to: user.email,
+				subject: "Confirme o seu e-mail!",
+				html: `<p>Olá, ${user.nome}, seja bem vindo à nossa To-Do List! Para confirmar o email, por favor, clique <a href="http://localhost:4200/confirmar">aqui</a></p>`,
+			})
+			console.log('E-mail enviado com sucesso!', result);
+		} catch (error) {
+			console.error('Erro ao enviar o e-mail:', error);
+			throw error;
+		}
 	}
 
 	async recuperacaoSenha(user: User, token: string): Promise<any>
