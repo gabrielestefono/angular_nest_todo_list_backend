@@ -75,7 +75,10 @@ export class UserService {
 		if(!user){
 			throw new NotFoundException('O usuário não existe!')
 		}
-		this.emailService.confirmacao(user);
+		const result = await this.emailService.confirmacao(user);
+		if(!result){
+			return false;
+		}
 		return true;
 	}
 
@@ -111,7 +114,10 @@ export class UserService {
 			throw new NotFoundException("Usuário não existe");
 		}
 		const token = await this.authservice.criarTokenAcesso(user.id, true, false);
-		this.emailService.recuperacaoSenha(user, token);
+		const result = await this.emailService.recuperacaoSenha(user, token);
+		if(!result){
+			return false;
+		}
 		return true;
 	}
 
