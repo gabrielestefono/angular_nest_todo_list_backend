@@ -13,7 +13,7 @@ export class EmailService {
       const result = await this.mailerService.sendMail({
         to: user.email,
         subject: 'Confirme o seu e-mail!',
-        html: `<p>Olá, ${user.nome}, seja bem vindo à nossa To-Do List! Para confirmar o email, por favor, clique <a href="${process.env.FRONTEND_URI}confirmar">aqui</a></p>`,
+        html: `<p>Olá, ${user.nome}, seja bem vindo à nossa To-Do List! Para confirmar o email, por favor, clique <a href="https://angular-nest-todo-list-eight.vercel.app/confirmar">aqui</a></p>`,
       });
       return result;
     } catch (error) {
@@ -27,7 +27,7 @@ export class EmailService {
         to: user.email,
         subject: 'Recuperação de Senha!',
         html: `<p>Olá, ${user.nome}!
-								Recebemos uma solicitação de alteração de senha, caso tenha sido você a solicitar, aqui está o <a href="${process.env.FRONTEND_URI}recuperar?token=${token}">link</a>.</p>
+								Recebemos uma solicitação de alteração de senha, caso tenha sido você a solicitar, aqui está o <a href="https://angular-nest-todo-list-eight.vercel.app/recuperar?token=${token}">link</a>.</p>
 							<p>Caso não tenha sido, por favor, ignore esse email</p>`,
       });
       return result;
