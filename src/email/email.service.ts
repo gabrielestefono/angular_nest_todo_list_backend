@@ -1,3 +1,4 @@
+import { SendMailErrorDTO } from './../error/dto/send-mail-error.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/user/entity/user.entity';
@@ -22,8 +23,21 @@ export class EmailService {
 			to: user.email,
 			subject: "Recuperação de Senha!",
 			html: `<p>Olá, ${user.nome}!
-							Recebemos uma solicitação de alteração de senha, caso tenha sido você a solicitar, aqui está o <a href="http://localhost:4200/user/recuperacao?token=${token}">link</a></p>.
+							Recebemos uma solicitação de alteração de senha, caso tenha sido você a solicitar, aqui está o <a href="http://localhost:4200/recuperar?token=${token}">link</a>.</p>
 						<p>Caso não tenha sido, por favor, ignore esse email</p>`,
+		})
+	}
+
+	async erroDesconhecido(sendMailErrorDTO: SendMailErrorDTO){
+		await this.mailerService.sendMail({
+			to: "gabrielestefono@hotmail.com",
+			subject: "Erro desconhecido!",
+			html: `
+			<h2>Olá, Gabriel! No projeto To Do List em Angular e Nest.JS ocorreu um erro desconhecido</h2>
+			<p>Código do Erro: ${sendMailErrorDTO.status}</p>
+			<p>Página: ${sendMailErrorDTO.pagina}</p>
+			<p>Descrição: ${sendMailErrorDTO.descricao}</p>
+			`,
 		})
 	}
 }

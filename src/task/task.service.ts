@@ -66,7 +66,7 @@ export class TaskService {
 		return await this.taskRepository.save(newTask);
 	}
 
-	async update(id: number, requisicao: Request){
+	async maskAsConcluded(id: number, requisicao: Request){
 		const token = requisicao.headers['authorization'].split(' ')[1];
 		const decodedJwt = verify(token, process.env.JWT_SECRET);
 		const usuario = decodedJwt['idUsuario'];
@@ -78,6 +78,44 @@ export class TaskService {
 		.getOne();
 		if(!task){
 			throw new NotFoundException('Tarefa não encontrada!');
+		}
+		const tasksFilhas: Task[] = await this.taskRepository.find({
+			where: {
+				elemento_pai: id
+			}
+		});
+		const taskPai: Task = await this.taskRepository.findOne({
+			where: {
+				id: task.elemento_pai,
+			},
+			relations: ['description']
+		});
+		const tasksIrmas: Task[] = await this.taskRepository.find({
+			where: {
+				elemento_pai: task.elemento_pai,
+			},
+			relations: ['description']
+		});
+		const tasksIrmasFiltradas: Task[] = tasksIrmas.filter(el => !el.concluida);
+		const numeroIrmas: number = tasksIrmasFiltradas.length;
+		if(tasksFilhas){
+			let todasConcluidas: boolean = true;
+			tasksFilhas.forEach(el => {
+				if(!el.concluida){
+					todasConcluidas = false;
+				}
+			});
+			console.log(numeroIrmas);
+			if(!todasConcluidas){
+				return task;
+			}else if(task.elemento_pai != 0 && taskPai.concluida){
+				taskPai.concluida = false;
+				this.taskRepository.save(taskPai);
+			}else if(numeroIrmas == 1){
+				console.log(numeroIrmas);
+				taskPai.concluida = true;
+				this.taskRepository.save(taskPai);
+			}
 		}
 		task.concluida = !task.concluida;
 		return await this.taskRepository.save(task);
@@ -130,6 +168,17 @@ export class TaskService {
 		.getOne();
 		if(!task){
 			throw new NotFoundException('Tarefa não encontrada!');
+		}
+		const tasks = await this.taskRepository.find({
+			where: {
+				elemento_pai: id,
+			}
+		});
+		if(tasks){
+			tasks.forEach(el => {
+				el.elemento_pai = task.elemento_pai
+				this.taskRepository.save(el);
+			});
 		}
 		return await this.taskRepository.remove(task);
 	}

@@ -47,4 +47,20 @@ export class UserController {
 	async recuperacao(@Body('email') email: string){
 		return this.userService.recuperacaoSenha(email);
 	}
+
+	@Get('verificar-token')
+	@UseGuards(AuthGuard('jwt'))
+	@HttpCode(HttpStatus.OK)
+	verificarToken(): boolean
+	{
+		return true;
+	}
+
+	@Post('mudar-senha')
+	@UseGuards(AuthGuard('jwt'))
+	@HttpCode(HttpStatus.OK)
+	mudarSenha(@Headers('authorization') token: string, @Body('senha') senha: string)
+	{
+		return this.userService.mudarSenha(token, senha);
+	}
 }

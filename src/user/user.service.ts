@@ -114,5 +114,26 @@ export class UserService {
 		this.emailService.recuperacaoSenha(user, token);
 		return true;
 	}
+
+	async mudarSenha(authToken: string, senha: string)
+	{
+		const [, token] = authToken.split(' ');
+		const tokenDecoded: any = jwt.decode(token);
+		if (!jwt.verify(token, process.env.JWT_SECRET)) {
+			throw new UnauthorizedException('O token expirou!');
+		} else {
+			if(!tokenDecoded.recovery){
+				throw new BadRequestException('Não há solicitação para troca de senhas!')
+			}
+			const user = await this.authservice.validarUsuario(tokenDecoded.idUsuario);
+			if(!user){
+				throw new NotFoundException('O usuário não existe!')
+			}
+			senha = await bcrypt.hash(senha, 10);
+			user.senha = senha;
+			this.userRepository.save(user);
+		}
+		return true;
+	}
 }
 

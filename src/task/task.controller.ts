@@ -29,7 +29,7 @@ export class TaskController {
 	@Patch(':id')
 	@UseGuards(AuthGuard('jwt'))
 	markAsConcluded(@Param('id') id: number, @Req() requisicao: Request){
-		return this.taskService.update(id, requisicao);
+		return this.taskService.maskAsConcluded(id, requisicao);
 	}
 
 	@Patch('nome/:id')
